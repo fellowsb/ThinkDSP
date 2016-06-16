@@ -19,6 +19,8 @@ import ipywidgets as widgets
 
 from matplotlib import pyplot
 
+import scipy.signal as ss
+
 wave = thinkdsp.read_wave(filename='28042__bcjordan__voicedownbew.wav')
 spec_g = wave.make_spectrogram(1024)
 spec_g.plot()
@@ -29,5 +31,13 @@ seg_1 = wave.segment(start=0.2, duration=.002)
 
 corrs_1 = np.correlate(seg_1.ys, seg_1.ys, "same")
 length = len(seg_1.ts)
-pyplot.plot(range(-length//2, length//2, 1), corrs_1)
+offset = range(-length//2, length//2, 1)
+peaks = ss.find_peaks_cwt(corrs_1, np.arange(3,5))
+pyplot.plot(offset, corrs_1)
+pyplot.vlines(offset[peaks[2]], 0, 6)
 pyplot.show()
+
+
+
+
+print(peaks)
